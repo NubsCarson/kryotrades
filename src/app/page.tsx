@@ -1,7 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { userData } from '@/config/users';
 
 const features = [
   {
@@ -59,18 +60,22 @@ export default function HomePage() {
             </p>
           </div>
           <div className="space-x-4">
-            <Link
-              href="/kryo"
-              className="inline-flex h-11 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              Track kryo
-            </Link>
-            <Link
-              href="/krimz"
-              className="inline-flex h-11 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              Track krimz
-            </Link>
+            {Object.keys(userData).map((username) => (
+              <span key={username} className="inline-block">
+                <Link
+                  href={`/${username}`}
+                  className="inline-flex h-11 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Track {username}
+                </Link>
+                <Link
+                  href={`/obs/${username}`}
+                  className="ml-2 inline-flex h-7 items-center justify-center rounded-md border border-input bg-background px-3 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  🎥
+                </Link>
+              </span>
+            ))}
           </div>
         </motion.div>
       </section>
