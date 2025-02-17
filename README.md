@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌟 Solana PnL Tracker
 
-## Getting Started
+A high-performance Solana wallet balance and PnL (Profit and Loss) tracker. Built with bleeding-edge tech stack for maximum efficiency.
 
-First, run the development server:
+[![Built by NubsCarson](https://img.shields.io/badge/Built%20by-NubsCarson-black?style=flat-square)](https://nubscarson.com)
+[![Follow on X](https://img.shields.io/badge/Follow-@monerosolana-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/monerosolana)
+
+## ⚡ Features
+
+- 🚀 Real-time balance tracking with sub-second updates
+- 📈 Advanced PnL calculations
+- 🎯 Zero-lag UI with optimized rendering
+- 🔒 Privacy-focused design
+- 🌐 Multi-wallet support
+- 🖥️ Clean, minimal interface
+
+## 🛠️ Tech Stack
+
+- [Next.js 13+](https://nextjs.org/) - For unmatched performance
+- [TypeScript](https://www.typescriptlang.org/) - Zero runtime errors
+- [Tailwind CSS](https://tailwindcss.com/) - No bloat styling
+- [Solana Web3.js](https://solana-labs.github.io/solana-web3.js/) - Direct blockchain access
+
+## 🚀 Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Add your RPC URL to .env.local
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000/[username]` to see your tracker.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/               # Next.js 13+ App Router
+├── components/        # React components
+├── config/           # Configuration files
+├── types/            # TypeScript types
+└── utils/            # Utility functions
+```
 
-## Learn More
+## ⚙️ Configuration
 
-To learn more about Next.js, take a look at the following resources:
+Add your RPC URL to `.env.local`:
+```
+NEXT_PUBLIC_SOLANA_RPC_URL=your_rpc_url_here
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Configure wallets in `src/config/users.ts`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🌐 Deployment
 
-## Deploy on Vercel
+Production-ready and optimized for Vercel deployment. One-click deploy:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fsolana-tracker)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📝 License
+
+MIT License - see LICENSE file
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+<div align="center">
+
+Built with 🖤 by [NubsCarson](https://nubscarson.com)
+
+[![Follow on X](https://img.shields.io/badge/@monerosolana-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/monerosolana)
+
+</div>
