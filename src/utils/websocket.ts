@@ -1,5 +1,5 @@
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { formatBalance, calculatePnL } from './format';
+import { formatBalance } from './format';
 
 const RPC_URL = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
 const RATE_LIMIT_MS = 30000; // 30 seconds
