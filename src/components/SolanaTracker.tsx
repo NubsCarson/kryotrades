@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { formatBalance, calculatePnL } from '../utils/format';
+import { formatBalance } from '../utils/format';
 import type { UserData } from '../types/user';
-import { fetchBalance } from '../utils/solana';
+import { subscribeToWalletBalance } from '../utils/websocket';
 
 interface Props {
   initialData: UserData;
@@ -17,31 +17,42 @@ export default function SolanaTracker({ initialData }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const updateBalance = async () => {
+    let isSubscribed = true;
+
+    const setupTracking = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const newBalance = await fetchBalance(initialData.wallet);
-        
-        if (newBalance === null) {
-          setError('Failed to fetch balance. Please try again later.');
-          return;
-        }
 
-        setBalance(newBalance);
-        setPnL(calculatePnL(newBalance, initialData.baseline));
+        const unsubscribe = await subscribeToWalletBalance(
+          initialData.wallet,
+          (newBalance, newPnL) => {
+            if (isSubscribed) {
+              setBalance(newBalance);
+              setPnL(newPnL);
+              setIsLoading(false);
+            }
+          }
+        );
+
+        return () => {
+          isSubscribed = false;
+          unsubscribe();
+        };
       } catch (err) {
-        setError('An unexpected error occurred. Please try again later.');
-        console.error('Error updating balance:', err);
-      } finally {
+        setError('Failed to connect to WebSocket. Please try again later.');
+        console.error('WebSocket Error:', err);
         setIsLoading(false);
+        return () => {};
       }
     };
 
-    updateBalance();
-    const interval = setInterval(updateBalance, 5000);
-    return () => clearInterval(interval);
-  }, [initialData.wallet, initialData.baseline]);
+    setupTracking().then(cleanup => {
+      return () => {
+        cleanup();
+      };
+    });
+  }, [initialData.wallet]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-10 px-4">
@@ -106,7 +117,7 @@ export default function SolanaTracker({ initialData }: Props) {
             <div className="relative h-full rounded-lg bg-card p-6">
               <div className="space-y-4">
                 <h3 className="text-lg font-medium text-muted-foreground">
-                  Daily PnL
+                  24h PnL
                 </h3>
                 <div className="flex items-center gap-3">
                   {isLoading ? (
@@ -115,7 +126,7 @@ export default function SolanaTracker({ initialData }: Props) {
                     <span className={`text-3xl font-bold ${
                       pnl >= 0 ? 'text-green-400' : 'text-red-400'
                     }`}>
-                      {pnl >= 0 ? '+' : ''}{pnl.toFixed(2)}%
+                      {pnl >= 0 ? '+' : ''}{formatBalance(pnl)} SOL
                     </span>
                   )}
                 </div>
@@ -124,7 +135,7 @@ export default function SolanaTracker({ initialData }: Props) {
           </motion.div>
         </div>
 
-        {/* Wallet Info */}
+        {/* External Links */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -135,7 +146,7 @@ export default function SolanaTracker({ initialData }: Props) {
             href={`https://solscan.io/account/${initialData.wallet}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-md border bg-card px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-md border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent"
           >
             View on Solscan
           </a>

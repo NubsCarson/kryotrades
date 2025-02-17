@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { formatBalance, calculatePnL } from '../utils/format';
+import { formatBalance } from '../utils/format';
 import type { UserData } from '../types/user';
-import { fetchBalance } from '../utils/solana';
+import { subscribeToWalletBalance } from '../utils/websocket';
 import Image from 'next/image';
 
 interface Props {
@@ -16,28 +16,38 @@ export default function OBSTracker({ initialData }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const updateBalance = async () => {
+    let isSubscribed = true;
+
+    const setupTracking = async () => {
       try {
         setError(null);
-        const newBalance = await fetchBalance(initialData.wallet);
-        
-        if (newBalance === null) {
-          setError('Failed to fetch balance');
-          return;
-        }
+        const unsubscribe = await subscribeToWalletBalance(
+          initialData.wallet,
+          (newBalance, newPnL) => {
+            if (isSubscribed) {
+              setBalance(newBalance);
+              setPnL(newPnL);
+            }
+          }
+        );
 
-        setBalance(newBalance);
-        setPnL(calculatePnL(newBalance, initialData.baseline));
+        return () => {
+          isSubscribed = false;
+          unsubscribe();
+        };
       } catch (err) {
-        setError('Error updating balance');
-        console.error('Error:', err);
+        setError('Error connecting to WebSocket');
+        console.error('WebSocket Error:', err);
+        return () => {};
       }
     };
 
-    updateBalance();
-    const interval = setInterval(updateBalance, 5000);
-    return () => clearInterval(interval);
-  }, [initialData.wallet, initialData.baseline]);
+    setupTracking().then(cleanup => {
+      return () => {
+        cleanup();
+      };
+    });
+  }, [initialData.wallet]);
 
   const containerStyle = {
     position: 'relative' as const,
@@ -194,7 +204,7 @@ export default function OBSTracker({ initialData }: Props) {
           </div>
           
           <div style={columnStyle}>
-            <div style={statTitleStyle}>PnL Today</div>
+            <div style={statTitleStyle}>24h PnL</div>
             <div style={valueContainerStyle}>
               <Image 
                 src="/solana_logo.png" 
@@ -210,7 +220,7 @@ export default function OBSTracker({ initialData }: Props) {
                   ? '0 0 12px rgba(0, 255, 0, 0.3)' 
                   : '0 0 12px rgba(255, 68, 68, 0.3)',
               }}>
-                {pnl >= 0 ? '+' : ''}{pnl.toFixed(2)}
+                {pnl >= 0 ? '+' : ''}{formatBalance(pnl)}
               </span>
             </div>
           </div>
