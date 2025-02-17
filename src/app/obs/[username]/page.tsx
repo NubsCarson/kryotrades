@@ -33,11 +33,7 @@ export default async function OBSPage({
     notFound();
   }
 
-  return (
-    <div className="min-h-screen bg-transparent p-4">
-      <OBSTracker initialData={user} />
-    </div>
-  );
+  return <OBSTracker initialData={user} />;
 }
 
 export function generateStaticParams(): Array<Params> {

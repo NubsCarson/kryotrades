@@ -38,27 +38,47 @@ export default function OBSTracker({ initialData }: Props) {
     return () => clearInterval(interval);
   }, [initialData.wallet, initialData.baseline]);
 
+  const baseStyle = {
+    background: 'transparent',
+    backgroundColor: 'transparent',
+    fontFamily: 'monospace',
+    fontSize: '1.25rem',
+    textShadow: '2px 2px 4px rgba(0,0,0,1)',
+  };
+
   if (error) {
     return (
-      <div className="font-mono text-sm text-red-500">
+      <div style={{
+        ...baseStyle,
+        color: '#ef4444',
+      }}>
         Error: {error}
       </div>
     );
   }
 
   return (
-    <div className="font-mono text-sm">
-      <div className="flex items-center gap-4">
-        <div>
-          <span className="text-muted-foreground">Balance:</span>{' '}
-          <span className="text-foreground">{formatBalance(balance)} SOL</span>
-        </div>
-        <div>
-          <span className="text-muted-foreground">PnL:</span>{' '}
-          <span className={pnl >= 0 ? 'text-green-400' : 'text-red-400'}>
-            {pnl >= 0 ? '+' : ''}{pnl.toFixed(2)}%
-          </span>
-        </div>
+    <div style={{
+      ...baseStyle,
+      display: 'flex',
+      alignItems: 'center',
+      gap: '2rem',
+      color: 'white',
+      background: 'transparent',
+      backgroundColor: 'transparent',
+    }}>
+      <div style={{ background: 'transparent' }}>
+        Balance: <strong style={{ background: 'transparent' }}>{formatBalance(balance)} SOL</strong>
+      </div>
+      <div style={{ background: 'transparent' }}>
+        PnL:{' '}
+        <strong style={{
+          background: 'transparent',
+          color: pnl >= 0 ? '#4ade80' : '#ef4444',
+          textShadow: `2px 2px 8px ${pnl >= 0 ? 'rgba(74, 222, 128, 0.8)' : 'rgba(239, 68, 68, 0.8)'}`,
+        }}>
+          {pnl >= 0 ? '+' : ''}{pnl.toFixed(2)}%
+        </strong>
       </div>
     </div>
   );

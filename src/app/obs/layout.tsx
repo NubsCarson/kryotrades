@@ -1,10 +1,6 @@
-import type { Metadata } from "next";
-import "@/app/globals.css";
+'use client';
 
-export const metadata: Metadata = {
-  title: "Solana PnL Tracker - OBS Overlay",
-  description: "OBS overlay for Solana wallet balance and PnL tracking",
-};
+import "@/app/globals.css";
 
 export default function OBSLayout({
   children,
@@ -12,7 +8,24 @@ export default function OBSLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="bg-transparent">
+    <div style={{ 
+      background: 'transparent',
+      backgroundColor: 'transparent',
+      margin: 0,
+      padding: 0,
+    }}>
+      <style jsx global>{`
+        html, body {
+          background: transparent !important;
+          background-color: transparent !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+        }
+        * {
+          background: transparent !important;
+        }
+      `}</style>
       {children}
     </div>
   );
