@@ -3,15 +3,15 @@ import type { Metadata } from 'next';
 import SolanaTracker from '@/components/SolanaTracker';
 import { userData } from '@/config/users';
 
-interface Props {
-  params: {
-    username: string;
-  };
-}
+type Params = { username: string };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const username = params.username;
-  const user = userData[username];
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const user = userData[resolvedParams.username];
   
   if (!user) return { title: 'User Not Found' };
 
@@ -21,9 +21,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function UserPage({ params }: Props) {
-  const username = params.username;
-  const user = userData[username];
+export default async function UserPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const resolvedParams = await params;
+  const user = userData[resolvedParams.username];
 
   if (!user) {
     notFound();
@@ -32,7 +36,7 @@ export default async function UserPage({ params }: Props) {
   return <SolanaTracker initialData={user} />;
 }
 
-export function generateStaticParams() {
+export function generateStaticParams(): Array<Params> {
   return Object.keys(userData).map((username) => ({
     username,
   }));
