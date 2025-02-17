@@ -40,13 +40,28 @@ export default function OBSTracker({ initialData }: Props) {
   }, [initialData.wallet, initialData.baseline]);
 
   const containerStyle = {
-    borderRadius: '20px',
+    position: 'relative' as const,
     width: '420px',
     padding: '16px 24px',
     background: 'rgba(18, 18, 23, 0.95)',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(179, 102, 255, 0.2)',
-    border: '4px solid #b366ff',
-    backdropFilter: 'blur(12px)' as const,
+    borderRadius: '20px',
+    isolation: 'isolate' as const,
+    zIndex: 1,
+  };
+
+  const gradientBorderStyle = {
+    content: '""',
+    position: 'absolute' as const,
+    inset: '-6px',
+    borderRadius: '24px',
+    background: 'linear-gradient(45deg, #ff69b4, #da70d6, #b366ff, #c71585, #9370db, #ff69b4)',
+    backgroundSize: '400% 400%',
+    animation: 'gradientBorder 8s ease infinite',
+    maskImage: 'linear-gradient(black, black)',
+    maskComposite: 'exclude' as const,
+    WebkitMaskImage: 'linear-gradient(black, black)',
+    WebkitMaskComposite: 'xor',
+    zIndex: -1,
   };
 
   const rowStyle = {
@@ -102,7 +117,8 @@ export default function OBSTracker({ initialData }: Props) {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '4px',
+    gap: '6px',
+    lineHeight: '16px',
   };
 
   const discordLogoStyle = {
@@ -110,9 +126,8 @@ export default function OBSTracker({ initialData }: Props) {
     height: '16px',
     filter: 'brightness(1.1)',
     opacity: 0.8,
-    position: 'relative' as const,
-    top: '-1px',
     objectFit: 'contain' as const,
+    display: 'block',
   };
 
   const logoStyle = {
@@ -126,75 +141,103 @@ export default function OBSTracker({ initialData }: Props) {
     filter: 'drop-shadow(0 0 4px rgba(179, 102, 255, 0.4))',
   };
 
+  const wrapperStyle = {
+    position: 'relative' as const,
+  };
+
   if (error) {
     return (
-      <div className="obs-card" style={containerStyle}>
-        <span style={{ 
-          color: '#ff4444',
-          textShadow: '0 0 8px rgba(255, 68, 68, 0.3)',
-          fontSize: '14px',
-          fontWeight: '500',
-        }}>
-          Error: {error}
-        </span>
+      <div style={wrapperStyle}>
+        <div style={gradientBorderStyle} />
+        <div className="obs-card" style={containerStyle}>
+          <span style={{ 
+            color: '#ff4444',
+            textShadow: '0 0 8px rgba(255, 68, 68, 0.3)',
+            fontSize: '14px',
+            fontWeight: '500',
+          }}>
+            Error: {error}
+          </span>
+        </div>
+        <style jsx global>{`
+          @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 100%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <div className="obs-card" style={containerStyle}>
-      <div style={rowStyle}>
-        <div style={columnStyle}>
-          <div style={statTitleStyle}>Balance</div>
-          <div style={valueContainerStyle}>
-            <Image 
-              src="/solana_logo.png" 
-              alt="SOL" 
-              width={28} 
-              height={28} 
-              style={logoStyle}
-            />
-            <span style={{ ...statValueStyle, color: '#00ffff' }}>
-              {formatBalance(balance)}
-            </span>
+    <div style={wrapperStyle}>
+      <div style={gradientBorderStyle} />
+      <div className="obs-card" style={containerStyle}>
+        <div style={rowStyle}>
+          <div style={columnStyle}>
+            <div style={statTitleStyle}>Balance</div>
+            <div style={valueContainerStyle}>
+              <Image 
+                src="/solana_logo.png" 
+                alt="SOL" 
+                width={28} 
+                height={28} 
+                style={logoStyle}
+              />
+              <span style={{ ...statValueStyle, color: '#00ffff' }}>
+                {formatBalance(balance)}
+              </span>
+            </div>
+          </div>
+          
+          <div style={columnStyle}>
+            <div style={statTitleStyle}>PnL Today</div>
+            <div style={valueContainerStyle}>
+              <Image 
+                src="/solana_logo.png" 
+                alt="SOL" 
+                width={28} 
+                height={28} 
+                style={logoStyle}
+              />
+              <span style={{
+                ...statValueStyle,
+                color: pnl >= 0 ? '#00ff00' : '#ff4444',
+                textShadow: pnl >= 0 
+                  ? '0 0 12px rgba(0, 255, 0, 0.3)' 
+                  : '0 0 12px rgba(255, 68, 68, 0.3)',
+              }}>
+                {pnl >= 0 ? '+' : ''}{pnl.toFixed(2)}
+              </span>
+            </div>
           </div>
         </div>
-        
-        <div style={columnStyle}>
-          <div style={statTitleStyle}>PnL Today</div>
-          <div style={valueContainerStyle}>
-            <Image 
-              src="/solana_logo.png" 
-              alt="SOL" 
-              width={28} 
-              height={28} 
-              style={logoStyle}
-            />
-            <span style={{
-              ...statValueStyle,
-              color: pnl >= 0 ? '#00ff00' : '#ff4444',
-              textShadow: pnl >= 0 
-                ? '0 0 12px rgba(0, 255, 0, 0.3)' 
-                : '0 0 12px rgba(255, 68, 68, 0.3)',
-            }}>
-              {pnl >= 0 ? '+' : ''}{pnl.toFixed(2)}
-            </span>
-          </div>
-        </div>
-      </div>
 
-      <div style={footerStyle}>
-        <span>join us at discord.gg/pumpdotfun</span>
-        <Image 
-          src="/discord.png" 
-          alt="Discord" 
-          width={16} 
-          height={16} 
-          style={discordLogoStyle}
-          quality={100}
-          priority
-        />
+        <div style={footerStyle}>
+          <span>join us at discord.gg/pumpdotfun</span>
+          <Image 
+            src="/discord.png" 
+            alt="Discord" 
+            width={16} 
+            height={16} 
+            style={discordLogoStyle}
+            quality={100}
+            priority
+          />
+        </div>
       </div>
+      <style jsx global>{`
+        @keyframes gradientBorder {
+          0% { background-position: 0% 50%; }
+          25% { background-position: 100% 100%; }
+          50% { background-position: 100% 50%; }
+          75% { background-position: 0% 100%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
     </div>
   );
 } 
