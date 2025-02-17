@@ -8,25 +8,33 @@ export default function OBSLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div style={{ 
-      background: 'transparent',
-      backgroundColor: 'transparent',
-      margin: 0,
-      padding: 0,
-    }}>
+    <>
       <style jsx global>{`
         html, body {
-          background: transparent !important;
-          background-color: transparent !important;
           margin: 0 !important;
           padding: 0 !important;
-          overflow: hidden !important;
-        }
-        * {
           background: transparent !important;
         }
+
+        #__next {
+          background: transparent !important;
+        }
+
+        /* Remove the universal background override */
+        .obs-card {
+          background: #222 !important;
+        }
       `}</style>
-      {children}
-    </div>
+      <div style={{
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'transparent',
+      }}>
+        {children}
+      </div>
+    </>
   );
 } 
