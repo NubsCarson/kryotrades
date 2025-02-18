@@ -6,7 +6,6 @@ import { subscribeToWalletBalance } from '../utils/websocket';
 import { formatBalance } from '../utils/format';
 import type { UserData } from '../types/user';
 import Image from 'next/image';
-import Link from 'next/link';
 import { MessageCircle, Copy, Check } from 'lucide-react';
 
 interface Props {

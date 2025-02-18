@@ -10,8 +10,6 @@ import {
   Wallet,
   Shield,
   Zap,
-  ChevronRight,
-  Globe,
   ArrowRight,
   MessageCircle,
 } from 'lucide-react';
@@ -40,14 +38,6 @@ const features = [
     description: 'No data storage, direct blockchain queries for maximum security',
     icon: <Shield className="h-6 w-6" />,
     color: 'text-primary',
-  },
-];
-
-const socials = [
-  {
-    name: 'Website',
-    url: 'https://nubscarson.com',
-    icon: <Globe className="h-5 w-5" />,
   },
 ];
 
@@ -238,7 +228,7 @@ export default function HomePage() {
           viewport={{ once: true }}
           className="mx-auto grid max-w-5xl gap-8 md:grid-cols-2"
         >
-          {features.map((feature, index) => (
+          {features.map((feature) => (
             <motion.div
               key={feature.title}
               variants={item}
