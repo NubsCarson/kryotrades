@@ -1,4 +1,7 @@
-export function formatBalance(balance: number): string {
+export function formatBalance(balance: number | null | undefined): string {
+  if (balance === null || balance === undefined) {
+    return '0.00';
+  }
   return balance.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

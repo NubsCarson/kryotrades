@@ -7,47 +7,45 @@ import { subscribeToWalletBalance } from '../utils/websocket';
 import Image from 'next/image';
 
 interface Props {
-  initialData: UserData;
+  user: UserData;
 }
 
-export default function OBSTracker({ initialData }: Props) {
-  const [balance, setBalance] = useState<number>(initialData.balance || 0);
-  const [pnl, setPnL] = useState<number>(0);
+export default function OBSTracker({ user }: Props) {
+  const [balance, setBalance] = useState<number | null>(null);
+  const [initialBalance, setInitialBalance] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isSubscribed = true;
+    let cleanup: (() => void) | undefined;
 
     const setupTracking = async () => {
       try {
-        setError(null);
-        const unsubscribe = await subscribeToWalletBalance(
-          initialData.wallet,
-          (newBalance, newPnL) => {
-            if (isSubscribed) {
-              setBalance(newBalance);
-              setPnL(newPnL);
-            }
+        const unsubscribe = await subscribeToWalletBalance(user.wallet, (newBalance: number) => {
+          setBalance(newBalance);
+          if (initialBalance === null) {
+            setInitialBalance(newBalance);
           }
-        );
-
-        return () => {
-          isSubscribed = false;
-          unsubscribe();
-        };
+        });
+        cleanup = unsubscribe;
       } catch (err) {
         setError('Error connecting to WebSocket');
         console.error('WebSocket Error:', err);
-        return () => {};
       }
     };
 
-    setupTracking().then(cleanup => {
-      return () => {
+    setupTracking();
+
+    return () => {
+      if (cleanup) {
         cleanup();
-      };
-    });
-  }, [initialData.wallet]);
+      }
+    };
+  }, [user.wallet, initialBalance]);
+
+  // Calculate PnL
+  const pnl = balance !== null && initialBalance !== null 
+    ? balance - initialBalance 
+    : 0;
 
   const containerStyle = {
     position: 'relative' as const,
@@ -202,9 +200,9 @@ export default function OBSTracker({ initialData }: Props) {
               </span>
             </div>
           </div>
-          
+
           <div style={columnStyle}>
-            <div style={statTitleStyle}>24h PnL</div>
+            <div style={statTitleStyle}>Session PnL</div>
             <div style={valueContainerStyle}>
               <Image 
                 src="/solana_logo.png" 

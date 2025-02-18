@@ -1,42 +1,27 @@
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
-import OBSTracker from '@/components/OBSTracker';
-import { userData } from '@/config/users';
+import { userData } from '../../../config/users';
+import OBSTracker from '../../../components/OBSTracker';
 
-type Params = { username: string };
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
-  const resolvedParams = await params;
-  const user = userData[resolvedParams.username];
-  
-  if (!user) return { title: 'User Not Found' };
-
-  return {
-    title: `${user.username}'s Solana Tracker (OBS)`,
-    description: `OBS overlay for ${user.username}'s Solana wallet balance and PnL`,
-  };
+interface PageProps {
+  params: Promise<{ username: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function OBSPage({
-  params,
-}: {
-  params: Promise<Params>;
-}) {
+export default async function Page({ params }: PageProps) {
   const resolvedParams = await params;
   const user = userData[resolvedParams.username];
 
   if (!user) {
-    notFound();
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-transparent text-red-500 font-mono">
+        <div className="text-2xl">User not found</div>
+      </div>
+    );
   }
 
-  return <OBSTracker initialData={user} />;
+  return <OBSTracker user={user} />;
 }
 
-export function generateStaticParams(): Array<Params> {
+export function generateStaticParams(): Array<{ username: string }> {
   return Object.keys(userData).map((username) => ({
     username,
   }));

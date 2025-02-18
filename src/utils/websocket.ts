@@ -6,10 +6,8 @@ const RPC_URL = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-b
 interface BalanceSubscription {
   wallet: string;
   subscriptionId: number;
-  onUpdate: (balance: number, pnl: number) => void;
-  baseline: number;
+  onUpdate: (balance: number) => void;
   lastKnownBalance: number;
-  lastPnL: number;
 }
 
 const activeSubscriptions = new Map<string, BalanceSubscription>();
@@ -34,7 +32,7 @@ async function getCurrentBalance(wallet: string): Promise<number | null> {
 
 export async function subscribeToWalletBalance(
   wallet: string,
-  onUpdate: (balance: number, pnl: number) => void
+  onUpdate: (balance: number) => void
 ): Promise<() => void> {
   // Clean up any existing subscription first
   if (activeSubscriptions.has(wallet)) {
@@ -63,21 +61,17 @@ export async function subscribeToWalletBalance(
       const subscription = activeSubscriptions.get(wallet);
       
       if (subscription && balance !== subscription.lastKnownBalance) {
-        const pnl = balance - subscription.baseline;
-        const pnlChange = pnl - subscription.lastPnL;
-        const pnlPercentage = (pnl / subscription.baseline) * 100;
+        const change = balance - subscription.lastKnownBalance;
         
         console.log(`💰 Trade Detected:
           Wallet: ${wallet.slice(0, 4)}...${wallet.slice(-4)}
           Previous: ${formatBalance(subscription.lastKnownBalance)} SOL
           Current: ${formatBalance(balance)} SOL
-          Change: ${pnlChange >= 0 ? '+' : ''}${formatBalance(pnlChange)} SOL
-          Total PnL: ${pnl >= 0 ? '+' : ''}${formatBalance(pnl)} SOL (${pnlPercentage.toFixed(2)}%)
+          Change: ${change >= 0 ? '+' : ''}${formatBalance(change)} SOL
           Time: ${new Date().toLocaleTimeString()}`);
         
         subscription.lastKnownBalance = balance;
-        subscription.lastPnL = pnl;
-        subscription.onUpdate(balance, pnl);
+        subscription.onUpdate(balance);
       }
     },
     'confirmed'
@@ -88,13 +82,11 @@ export async function subscribeToWalletBalance(
     wallet,
     subscriptionId,
     onUpdate,
-    baseline: initialBalance,
-    lastKnownBalance: initialBalance,
-    lastPnL: 0
+    lastKnownBalance: initialBalance
   });
 
-  // Initial update with initial PnL (should be 0 since baseline = initial balance)
-  onUpdate(initialBalance, 0);
+  // Initial update
+  onUpdate(initialBalance);
 
   // Return cleanup function
   return () => unsubscribeFromWallet(wallet);
