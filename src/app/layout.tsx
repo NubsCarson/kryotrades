@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { Header } from "@/components/ui/header";
 import "./globals.css";
 
 const inter = Inter({
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
+  themeColor: "#16171B",
 };
 
 export default function RootLayout({
@@ -27,10 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} dark`} suppressHydrationWarning>
       <body 
-        className={isOBS ? undefined : "min-h-screen bg-background font-sans antialiased"}
-        style={isOBS ? { background: 'transparent' } : undefined}
+        className={isOBS ? undefined : "min-h-screen font-sans antialiased"}
+        style={isOBS ? { background: 'transparent' } : { background: '#16171B' }}
       >
         <div className={isOBS ? undefined : "relative flex min-h-screen flex-col"}>
+          {!isOBS && <Header />}
           <div className={isOBS ? undefined : "flex-1"}>
             <div className={isOBS ? undefined : "container py-6"}>
               {children}
