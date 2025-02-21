@@ -47,6 +47,11 @@ export default function OBSTracker2({ user }: Props) {
     ? balance - initialBalance 
     : 0;
 
+  const wrapperStyle = {
+    position: 'relative' as const,
+    width: 'fit-content',
+  };
+
   const containerStyle = {
     position: 'relative' as const,
     width: '420px',
@@ -147,10 +152,6 @@ export default function OBSTracker2({ user }: Props) {
     position: 'relative' as const,
     top: '1px',
     filter: 'drop-shadow(0 0 4px rgba(179, 102, 255, 0.4))',
-  };
-
-  const wrapperStyle = {
-    position: 'relative' as const,
   };
 
   if (error) {

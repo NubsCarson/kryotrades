@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { userData } from '@/config/users';
-import { notFound } from 'next/navigation';
 import OBSTracker2 from '@/components/OBSTracker2';
+import OBSLayout from '@/components/OBSLayout';
 
 interface PageProps {
   params: Promise<{ username: string }>;
@@ -25,13 +25,17 @@ export default async function OBSPage({ params }: PageProps) {
   const user = userData[resolvedParams.username];
 
   if (!user) {
-    notFound();
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-transparent text-red-500 font-mono">
+        <div className="text-2xl">User not found</div>
+      </div>
+    );
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center">
+    <OBSLayout>
       <OBSTracker2 user={user} />
-    </main>
+    </OBSLayout>
   );
 }
 
