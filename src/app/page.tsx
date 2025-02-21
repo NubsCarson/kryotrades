@@ -172,7 +172,9 @@ export default function HomePage() {
             animate="show"
             className="flex flex-wrap justify-center gap-4"
           >
-            {Object.keys(userData).map((username) => (
+            {Object.entries(userData)
+              .filter(([, user]) => user.showOnHomepage !== false)
+              .map(([username]) => (
               <motion.div
                 key={username}
                 variants={item}

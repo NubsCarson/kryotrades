@@ -225,7 +225,7 @@ export default function OBSTracker({ user }: Props) {
         </div>
 
         <div style={footerStyle}>
-          <span>join us at discord.gg/pumpdotfun</span>
+          <span>join us at {user.discordLink || 'discord.gg/pumpdotfun'}</span>
           <Image 
             src="/discord.png" 
             alt="Discord" 
