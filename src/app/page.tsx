@@ -200,6 +200,16 @@ export default function HomePage() {
                     <Zap className="h-4 w-4 text-primary" />
                   </Link>
                 </Button>
+                <Button 
+                  size="icon" 
+                  variant="outline" 
+                  className="relative overflow-hidden rounded-full border-[#ff66cc] bg-[#0f0f0f] transition-all hover:scale-105 hover:border-[#ff66cc] hover:bg-[#1a1a1a] hover:shadow-[0_0_20px_rgba(255,105,180,0.2)]"
+                  asChild
+                >
+                  <Link href={`/obs2/${username}`}>
+                    <Zap className="h-4 w-4 text-secondary" />
+                  </Link>
+                </Button>
               </motion.div>
             ))}
           </motion.div>
