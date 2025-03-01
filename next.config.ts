@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { Configuration } from 'webpack';
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
-  webpack: (config) => {
+  webpack: (config: Configuration) => {
     // Simple WSL optimization for file watching
     config.watchOptions = {
       poll: 1000,
