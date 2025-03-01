@@ -25,5 +25,11 @@ export const userData: Record<string, UserData> = {
     wallet: "ySnNGJtzKaXfZ8QsHtbjuMrYY8U7Skj95kDXBtURxg1",
     balance: 0.0,
     showOnHomepage: true
+  },
+  "cwug": {
+    username: "cwug",
+    wallet: "J4THyr9YHuDdK5nhkPyxiWc1iFWaXDRpJCC8KRsNgeqZ",
+    balance: 0.0,
+    showOnHomepage: true
   }
 }; 
