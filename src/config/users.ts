@@ -19,5 +19,11 @@ export const userData: Record<string, UserData> = {
     balance: 0.0,
     showOnHomepage: false,
     discordLink: "discord.gg/3gig"
+  },
+  "chawklit": {
+    username: "chawklit",
+    wallet: "ySnNGJtzKaXfZ8QsHtbjuMrYY8U7Skj95kDXBtURxg1",
+    balance: 0.0,
+    showOnHomepage: true
   }
 }; 

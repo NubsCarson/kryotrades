@@ -1,0 +1,12 @@
+# WSL Configuration for Next.js Development
+[wsl2]
+# Limit memory to prevent excessive resource usage
+memory=8GB
+# Allocate processors for better performance
+processors=4
+# Optimize I/O performance
+swap=4GB
+# Disable page reporting for better memory management
+pageReporting=false
+# Optimize file watching
+localhostForwarding=true 
